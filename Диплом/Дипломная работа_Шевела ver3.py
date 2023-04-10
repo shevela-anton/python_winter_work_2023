@@ -2,7 +2,7 @@ import openpyxl
 import matplotlib.pyplot as plt
 import sys
 from PyQt6.QtWidgets import (
-    QMainWindow, QApplication,
+    QMainWindow, QApplication, QScrollArea,
     QLabel, QComboBox, QPushButton, QVBoxLayout,
     QHBoxLayout, QGridLayout, QWidget
 )
@@ -16,28 +16,19 @@ class PersonalAccount(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Личный кабинет")
-        self.resize(640, 360)
+        self.resize(1280, 720)
         self.move(0, 0)
+
+        # Для разных размеров экрана устанавливаем прокрутку
+        # Так как дизайн верстался на мониторе 29 дюймов в 4к
+        self.scroll = QScrollArea()
+        self.scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
+        self.scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
+        self.scroll.setWidgetResizable(True)
 
         # Создаём главный layout
         layout = QGridLayout()
         layout.setContentsMargins(20, 20, 20, 140)
-
-        """# Создание боковой панели
-        self.tabs = QTabWidget()
-        #self.tabs.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.tabs.setTabPosition(QTabWidget.TabPosition.West)
-        for i in range(1, 6):
-            tab = QWidget()
-            label = QLabel(tab)
-            pixmap = QPixmap(f'{i}_tab.png')
-            label.setPixmap(pixmap)
-            tab_layout = QVBoxLayout()
-            tab_layout.addWidget(label)
-            tab.setLayout(tab_layout)
-            self.tabs.addTab(tab, f'{i}')
-            #layout.addWidget(self.tabs)
-        layout.addLayout(tab_layout, 0, 0, 5, 1)"""
 
         # Создаём вложенные слои
         layout_top = QGridLayout()
@@ -400,7 +391,9 @@ class PersonalAccount(QMainWindow):
 
         widgets = QWidget()
         widgets.setLayout(layout)
-        self.setCentralWidget(widgets)
+        self.scroll.setWidget(widgets)
+
+        self.setCentralWidget(self.scroll)
 
     def calculate_salary(self):
         # Загрузить Excel файл
